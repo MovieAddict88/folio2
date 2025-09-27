@@ -1,0 +1,17 @@
+# Ignore sensitive configuration files
+config/config.php
+
+# Ignore temporary files and logs
+jules-scratch/
+php_server.log
+
+# Ignore vendor directories
+vendor/
+
+# Ignore IDE/editor directories
+.idea/
+.vscode/
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
