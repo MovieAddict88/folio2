@@ -89,10 +89,17 @@ try {
       `media_url` VARCHAR(255)
     );
 
+    CREATE TABLE IF NOT EXISTS `testimonials` (
+      `id` INT AUTO_INCREMENT PRIMARY KEY,
+      `quote` TEXT NOT NULL,
+      `author` VARCHAR(255) NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS `documents` (
       `id` INT AUTO_INCREMENT PRIMARY KEY,
       `file_name` VARCHAR(255) NOT NULL,
       `file_path` VARCHAR(255) NOT NULL,
+      `download_count` INT DEFAULT 0,
       `uploaded_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 

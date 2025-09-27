@@ -22,220 +22,32 @@ try {
     $projects_stmt = $pdo->query('SELECT * FROM projects');
     $projects = $projects_stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Fetch Testimonials data (new)
+    $testimonials_stmt = $pdo->query('SELECT * FROM testimonials');
+    $testimonials = $testimonials_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch Documents data
+    $documents_stmt = $pdo->query('SELECT * FROM documents ORDER BY file_name ASC');
+    $documents = $documents_stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    // A simple error message if the database connection fails.
     die("Error: Could not connect to the database. Please ensure the installer has run and the config file is correct. " . $e->getMessage());
 }
+
+// Include header
+include 'templates/header.php';
+
+// Include sections
+include 'templates/home.php';
+include 'templates/about.php';
+include 'templates/education.php';
+include 'templates/experience.php';
+include 'templates/skills.php';
+include 'templates/projects.php';
+include 'templates/testimonials.php';
+include 'templates/download.php';
+include 'templates/contact.php';
+
+// Include footer
+include 'templates/footer.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($about['name'] ?? 'Portfolio'); ?>'s Portfolio</title>
-    <link rel="stylesheet" href="public/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
-<body>
-
-    <!-- Header / Home Section -->
-    <header id="home">
-        <div class="container">
-            <h1><?php echo htmlspecialchars($about['name'] ?? 'Jane Doe'); ?></h1>
-            <p><?php echo htmlspecialchars($about['tagline'] ?? 'Inspiring the next generation.'); ?></p>
-        </div>
-    </header>
-
-    <div class="container">
-        <!-- About Me Section -->
-        <section id="about" class="section">
-            <h2>About Me</h2>
-            <?php if (!empty($about['photo_url'])): ?>
-                <img src="<?php echo htmlspecialchars($about['photo_url']); ?>" alt="Photo of <?php echo htmlspecialchars($about['name']); ?>">
-            <?php endif; ?>
-            <p><?php echo nl2br(htmlspecialchars($about['bio'] ?? '')); ?></p>
-            <h3>Education</h3>
-            <?php
-            if (!empty($about['education'])) {
-                $education_items = explode("\n", trim($about['education']));
-                if (!empty($education_items)) {
-                    echo '<ul class="education-list">';
-                    foreach ($education_items as $item) {
-                        if (!empty(trim($item))) {
-                            echo '<li>' . htmlspecialchars(trim($item)) . '</li>';
-                        }
-                    }
-                    echo '</ul>';
-                }
-            }
-            ?>
-            <h3>My Philosophy</h3>
-            <p><?php echo htmlspecialchars($about['philosophy'] ?? ''); ?></p>
-        </section>
-
-        <!-- Experience Section -->
-        <section id="experience" class="section">
-            <h2>Experience</h2>
-            <ul class="timeline">
-                <?php foreach ($experiences as $exp): ?>
-                <li class="timeline-item">
-                    <div class="year"><?php echo htmlspecialchars($exp['start_year']); ?> - <?php echo htmlspecialchars($exp['end_year']); ?></div>
-                    <div class="timeline-content">
-                        <h3><?php echo htmlspecialchars($exp['title']); ?></h3>
-                        <h4><?php echo htmlspecialchars($exp['institution']); ?></h4>
-                        <p><?php echo nl2br(htmlspecialchars($exp['description'])); ?></p>
-                    </div>
-                </li>
-                <?php endforeach; ?>
-            </ul>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills" class="section">
-            <h2>Skills</h2>
-            <ul class="skills-list">
-                <?php foreach ($skills as $skill): ?>
-                    <li class="skill-item"><?php echo htmlspecialchars($skill['skill_name']); ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="section">
-            <h2>Projects</h2>
-            <div class="projects-grid">
-                <?php foreach ($projects as $project): ?>
-                <div class="project">
-                    <h3><?php echo htmlspecialchars($project['title']); ?></h3>
-                    <?php if (!empty($project['media_url'])):
-                        $media_files = explode(',', $project['media_url']);
-                        $first_image = $media_files[0];
-                    ?>
-                        <img src="<?php echo htmlspecialchars($first_image); ?>" alt="<?php echo htmlspecialchars($project['title']); ?>" class="project-thumbnail" data-media='<?php echo htmlspecialchars(json_encode($media_files), ENT_QUOTES, 'UTF-8'); ?>'>
-                    <?php endif; ?>
-                    <p><?php echo nl2br(htmlspecialchars($project['description'])); ?></p>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </section>
-
-        <!-- Lightbox Modal -->
-        <div id="lightbox-modal" class="lightbox">
-            <span class="close-btn">&times;</span>
-            <div class="lightbox-content">
-                <img id="lightbox-img" src="">
-                <a class="prev-btn">&#10094;</a>
-                <a class="next-btn">&#10095;</a>
-            </div>
-        </div>
-
-        <!-- Contact Section -->
-        <section id="contact" class="section">
-            <h2>Contact Me</h2>
-            <div class="contact-info">
-                <?php if (!empty($about['address'])): ?>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span><?php echo htmlspecialchars($about['address']); ?></span>
-                </div>
-                <?php endif; ?>
-                <?php if (!empty($about['phone'])): ?>
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <a href="tel:<?php echo htmlspecialchars($about['phone']); ?>"><?php echo htmlspecialchars($about['phone']); ?></a>
-                </div>
-                <?php endif; ?>
-                <?php if (!empty($about['email'])): ?>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <a href="mailto:<?php echo htmlspecialchars($about['email']); ?>"><?php echo htmlspecialchars($about['email']); ?></a>
-                </div>
-                <?php endif; ?>
-                <?php if (!empty($about['facebook_url'])): ?>
-                <div class="contact-item">
-                    <i class="fab fa-facebook"></i>
-                    <a href="<?php echo htmlspecialchars($about['facebook_url']); ?>" target="_blank">Facebook</a>
-                </div>
-                <?php endif; ?>
-                <?php if (!empty($about['youtube_url'])): ?>
-                <div class="contact-item">
-                    <i class="fab fa-youtube"></i>
-                    <a href="<?php echo htmlspecialchars($about['youtube_url']); ?>" target="_blank">YouTube</a>
-                </div>
-                <?php endif; ?>
-                <?php if (!empty($about['tiktok_url'])): ?>
-                <div class="contact-item">
-                    <i class="fab fa-tiktok"></i>
-                    <a href="<?php echo htmlspecialchars($about['tiktok_url']); ?>" target="_blank">TikTok</a>
-                </div>
-                <?php endif; ?>
-                 <?php if (!empty($about['linkedin_url'])): ?>
-                <div class="contact-item">
-                    <i class="fab fa-linkedin"></i>
-                    <a href="<?php echo htmlspecialchars($about['linkedin_url']); ?>" target="_blank">LinkedIn</a>
-                </div>
-                <?php endif; ?>
-            </div>
-        </section>
-
-        <!-- Download Center Section -->
-        <section id="download-center" class="section">
-            <h2>Download Center</h2>
-            <p>Access protected documents, such as my resume, by entering a password.</p>
-            <a href="download.php" class="download-link">Go to Download Page</a>
-        </section>
-    </div>
-
-    <footer>
-        <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($about['name'] ?? 'Portfolio'); ?>. All Rights Reserved.</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('lightbox-modal');
-            const modalImg = document.getElementById('lightbox-img');
-            const closeBtn = modal.querySelector('.close-btn');
-            const prevBtn = modal.querySelector('.prev-btn');
-            const nextBtn = modal.querySelector('.next-btn');
-
-            let currentMedia = [];
-            let currentIndex = 0;
-
-            document.querySelectorAll('.project-thumbnail').forEach(item => {
-                item.addEventListener('click', event => {
-                    currentMedia = JSON.parse(event.target.dataset.media);
-                    currentIndex = 0;
-                    updateLightbox();
-                    modal.style.display = 'block';
-                });
-            });
-
-            function updateLightbox() {
-                modalImg.src = currentMedia[currentIndex];
-                prevBtn.style.display = currentMedia.length > 1 ? 'block' : 'none';
-                nextBtn.style.display = currentMedia.length > 1 ? 'block' : 'none';
-            }
-
-            closeBtn.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex - 1 + currentMedia.length) % currentMedia.length;
-                updateLightbox();
-            });
-
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % currentMedia.length;
-                updateLightbox();
-            });
-
-            window.addEventListener('click', (event) => {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        });
-    </script>
-</body>
-</html>

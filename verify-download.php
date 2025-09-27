@@ -43,6 +43,10 @@ try {
     $full_file_path = __DIR__ . '/' . $file_path;
 
     if (file_exists($full_file_path)) {
+        // Increment download count
+        $stmt = $pdo->prepare('UPDATE documents SET download_count = download_count + 1 WHERE file_path = ?');
+        $stmt->execute([$file_path]);
+
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . basename($full_file_path) . '"');
