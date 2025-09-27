@@ -2,7 +2,6 @@
 require_once 'auth_middleware.php';
 require_once '../config/config.php';
 
-$message = '';
 $error = '';
 
 try {
@@ -13,16 +12,15 @@ try {
         if (isset($_POST['upload_document'])) {
             if (isset($_FILES['document']) && $_FILES['document']['error'] == 0) {
                 $target_dir = "../documents/";
-                if (!is_dir($target_dir)) {
-                    mkdir($target_dir, 0755, true);
-                }
+                if (!is_dir($target_dir)) mkdir($target_dir, 0755, true);
+
                 $file_name = basename($_FILES["document"]["name"]);
                 $target_file = $target_dir . $file_name;
 
                 if (move_uploaded_file($_FILES["document"]["tmp_name"], $target_file)) {
                     $stmt = $pdo->prepare('INSERT INTO documents (file_name, file_path) VALUES (?, ?)');
                     $stmt->execute([$file_name, 'documents/' . $file_name]);
-                    header('Location: manage-documents.php?success=Document uploaded successfully!');
+                    header('Location: manage-documents.php?success=Document uploaded!');
                     exit;
                 } else {
                     $error = "Sorry, there was an error uploading your file.";
@@ -40,11 +38,10 @@ try {
                 unlink('../' . $doc['file_path']);
             }
 
-            $stmt = $pdo->prepare('DELETE FROM passwords WHERE document_id = ?');
-            $stmt->execute([$id]);
-            $stmt = $pdo->prepare('DELETE FROM documents WHERE id = ?');
-            $stmt->execute([$id]);
-            header('Location: manage-documents.php?success=Document deleted successfully!');
+            $pdo->prepare('DELETE FROM passwords WHERE document_id = ?')->execute([$id]);
+            $pdo->prepare('DELETE FROM documents WHERE id = ?')->execute([$id]);
+
+            header('Location: manage-documents.php?success=Document deleted!');
             exit;
         }
     }
@@ -66,7 +63,6 @@ try {
 <body>
 
 <?php include 'admin-header.php'; ?>
-
 <div class="main-content">
     <h1>Manage Documents</h1>
 

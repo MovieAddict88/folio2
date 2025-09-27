@@ -11,7 +11,9 @@
 
     <!-- Sidebar (Desktop) -->
     <aside class="sidebar">
-        <img src="<?php echo htmlspecialchars($about['photo_url'] ?? 'public/default-profile.png'); ?>" alt="Profile Picture" class="profile-pic">
+        <?php if (!empty($about['photo_url'])): ?>
+            <img src="<?php echo htmlspecialchars($about['photo_url']); ?>" alt="Profile Picture" class="profile-pic">
+        <?php endif; ?>
         <nav>
             <ul>
                 <li><a href="#home">Home</a></li>
@@ -26,6 +28,7 @@
             </ul>
         </nav>
         <a href="admin/login.php" class="admin-login-link">⚙️ Admin Login</a>
+        <button class="theme-toggle">🌙/☀️</button>
     </aside>
 
     <!-- Mobile Header -->
@@ -37,6 +40,9 @@
 
     <!-- Mobile Drawer -->
     <aside class="drawer">
+        <div class="drawer-header">
+            <img src="<?php echo htmlspecialchars($about['photo_url'] ?? 'public/default-profile.png'); ?>" alt="Profile Picture" class="profile-pic">
+        </div>
         <nav>
             <ul>
                 <li><a href="#home">Home</a></li>

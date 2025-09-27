@@ -2,26 +2,20 @@
 require_once 'auth_middleware.php';
 require_once '../config/config.php';
 
-$message = '';
 $error = '';
 
 try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $photo_url = $_POST['current_photo_url']; // Keep old photo if new one isn't uploaded
+        $photo_url = $_POST['current_photo_url'];
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
             $target_dir = "../public/images/";
-            if (!is_dir($target_dir)) {
-                mkdir($target_dir, 0755, true);
-            }
+            if (!is_dir($target_dir)) mkdir($target_dir, 0755, true);
             $target_file = $target_dir . basename($_FILES["photo"]["name"]);
-            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-            $check = getimagesize($_FILES["photo"]["tmp_name"]);
-            if($check !== false) {
+            if (getimagesize($_FILES["photo"]["tmp_name"])) {
                 if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
                     $photo_url = "public/images/" . basename($_FILES["photo"]["name"]);
                 } else {
@@ -44,12 +38,13 @@ try {
         }
     }
 
-    // Fetch current data
     $stmt = $pdo->query('SELECT * FROM about_me WHERE id = 1');
     $about = $stmt->fetch(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
     $error = "Database error: " . $e->getMessage();
+    // To prevent rendering a broken page, we can redirect or show a generic error.
+    // For simplicity, we'll just display the error.
 }
 ?>
 <!DOCTYPE html>
@@ -62,53 +57,52 @@ try {
 </head>
 <body>
 
-<?php include 'admin-header.php'; ?>
-
+<?php include 'admin-header.php'; // This now includes the sidebar ?>
 <div class="main-content">
     <h1>Edit About Me</h1>
     <form action="edit-about.php" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($about['name']); ?>" required>
+            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($about['name'] ?? ''); ?>" required>
         </div>
         <div class="form-group">
             <label for="tagline">Tagline</label>
-            <input type="text" id="tagline" name="tagline" value="<?php echo htmlspecialchars($about['tagline']); ?>">
+            <input type="text" id="tagline" name="tagline" value="<?php echo htmlspecialchars($about['tagline'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="photo">Photo</label>
             <input type="file" id="photo" name="photo">
-            <input type="hidden" name="current_photo_url" value="<?php echo htmlspecialchars($about['photo_url']); ?>">
+            <input type="hidden" name="current_photo_url" value="<?php echo htmlspecialchars($about['photo_url'] ?? ''); ?>">
             <?php if(!empty($about['photo_url'])): ?>
                 <p>Current photo: <img src="../<?php echo htmlspecialchars($about['photo_url']); ?>" alt="Current Photo" width="100"></p>
             <?php endif; ?>
         </div>
         <div class="form-group">
             <label for="bio">Bio</label>
-            <textarea id="bio" name="bio"><?php echo htmlspecialchars($about['bio']); ?></textarea>
+            <textarea id="bio" name="bio"><?php echo htmlspecialchars($about['bio'] ?? ''); ?></textarea>
         </div>
         <div class="form-group">
             <label for="education">Education</label>
-            <textarea id="education" name="education"><?php echo htmlspecialchars($about['education']); ?></textarea>
+            <textarea id="education" name="education"><?php echo htmlspecialchars($about['education'] ?? ''); ?></textarea>
             <small>Enter each qualification on a new line.</small>
         </div>
         <div class="form-group">
             <label for="philosophy">Teaching Philosophy</label>
-            <textarea id="philosophy" name="philosophy"><?php echo htmlspecialchars($about['philosophy']); ?></textarea>
+            <textarea id="philosophy" name="philosophy"><?php echo htmlspecialchars($about['philosophy'] ?? ''); ?></textarea>
         </div>
         <hr>
         <h3>Contact Information</h3>
         <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($about['email']); ?>">
+            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($about['email'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="linkedin_url">LinkedIn URL</label>
-            <input type="text" id="linkedin_url" name="linkedin_url" value="<?php echo htmlspecialchars($about['linkedin_url']); ?>">
+            <input type="text" id="linkedin_url" name="linkedin_url" value="<?php echo htmlspecialchars($about['linkedin_url'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($about['phone']); ?>">
+            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($about['phone'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="address">Address</label>

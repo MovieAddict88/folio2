@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message_to_admin = "Name: {$name}\nEmail: {$email}\n\nMessage:\n{$message}";
         $headers_to_admin = "From: webmaster@example.com\r\nReply-To: {$email}";
 
+        // The mail() function is typically disabled in sandboxed environments.
+        // In a live server, this would send an email to the administrator.
         // mail($admin_email, $subject_to_admin, $message_to_admin, $headers_to_admin);
 
         $subject_to_user = "Thank you for contacting us!";

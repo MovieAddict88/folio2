@@ -4,18 +4,29 @@
     - Navy Blue: #1C2B4A
     - White: #FFFFFF
     - Gold: #E2B714
-    Typography: Poppins, Inter
 */
 
-/* --- Base & Typography --- */
+/* --- CSS Variables for Theming --- */
 :root {
     --primary-bg: #FFFFFF;
     --primary-text: #1C2B4A;
     --sidebar-bg: #1C2B4A;
     --sidebar-text: #FFFFFF;
     --accent-color: #E2B714;
+    --section-border: #EEE;
+    --card-bg: #f9f9f9;
 }
 
+body.dark-mode {
+    --primary-bg: #1C2B4A;
+    --primary-text: #FFFFFF;
+    --sidebar-bg: #121A2C;
+    --sidebar-text: #FFFFFF;
+    --section-border: #2a3a5a;
+    --card-bg: #121A2C;
+}
+
+/* --- Base & Typography --- */
 body {
     font-family: 'Poppins', 'Inter', sans-serif;
     background-color: var(--primary-bg);
@@ -25,69 +36,72 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-body.dark-mode {
-    --primary-bg: #1C2B4A;
-    --primary-text: #FFFFFF;
-    --sidebar-bg: #121A2C;
-    --sidebar-text: #FFFFFF;
-}
-
-body.dark-mode a {
-    color: #E2B714; /* Gold accent for links in dark mode */
-}
-
-.sidebar {
-    background-color: var(--sidebar-bg);
-    color: var(--sidebar-text);
-}
-
-.sidebar nav ul li a {
-    color: var(--sidebar-text);
-}
-
-.sidebar nav ul li a:hover {
-    background-color: var(--accent-color);
+a {
     color: #1C2B4A;
+    transition: color 0.3s;
+}
+body.dark-mode a {
+    color: var(--accent-color);
 }
 
-/* --- Layout --- */
+/* --- Main Layout --- */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* --- Sidebar (Desktop) --- */
-.sidebar {
+.main-panel {
+    margin-left: 250px;
+    padding: 20px 40px;
+}
+
+.section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--section-border);
+}
+
+/* --- Sidebar (Desktop) & Drawer (Mobile) --- */
+.sidebar, .drawer {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
     position: fixed;
     top: 0;
-    left: 0;
-    width: 250px;
     height: 100%;
-    background-color: #1C2B4A;
-    color: #FFFFFF;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px 10px;
+    z-index: 1000;
 }
 
-.sidebar .profile-pic {
+.sidebar {
+    left: 0;
+}
+
+.drawer {
+    left: -280px;
+    transition: left 0.3s ease;
+}
+
+.profile-pic {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     margin-bottom: 20px;
+    object-fit: cover;
 }
 
-.sidebar nav ul {
+.sidebar nav ul, .drawer nav ul {
     list-style: none;
     padding: 0;
     width: 100%;
 }
 
-.sidebar nav ul li a {
+.sidebar nav ul li a, .drawer nav ul li a {
     display: block;
-    color: #FFFFFF;
+    color: var(--sidebar-text);
     text-decoration: none;
     padding: 10px 15px;
     border-radius: 8px;
@@ -95,62 +109,83 @@ body.dark-mode a {
     transition: background-color 0.3s;
 }
 
-.sidebar nav ul li a:hover {
-    background-color: #E2B714;
+.sidebar nav ul li a:hover, .drawer nav ul li a:hover {
+    background-color: var(--accent-color);
     color: #1C2B4A;
 }
 
-/* --- Main Panel --- */
-.main-panel {
-    margin-left: 250px;
-    padding: 40px;
+.admin-login-link, .theme-toggle {
+    margin-top: auto;
+    color: var(--sidebar-text);
+    background: rgba(255,255,255,0.1);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 90%;
+    text-align: center;
 }
 
-.section {
-    padding: 60px 0;
-    border-bottom: 1px solid #EEE;
-}
-
-/* --- Header (Mobile) --- */
+/* --- Mobile Header --- */
 .mobile-header {
-    display: none; /* Hidden on desktop */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #1C2B4A;
+    background-color: var(--sidebar-bg);
     color: #FFFFFF;
     padding: 10px 20px;
-    z-index: 1000;
+    z-index: 999;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.mobile-header .menu-btn {
+.mobile-header .menu-btn, .mobile-header .theme-toggle {
     font-size: 24px;
     background: none;
     border: none;
     color: #FFFFFF;
     cursor: pointer;
+    padding: 5px;
 }
 
-/* --- Drawer (Mobile) --- */
-.drawer {
-    position: fixed;
-    top: 0;
-    left: -280px; /* Hidden by default */
-    width: 280px;
-    height: 100%;
-    background-color: #1C2B4A;
-    padding-top: 60px;
-    transition: left 0.3s ease;
-    z-index: 999;
+/* --- Contact Form --- */
+#contact .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-/* --- Testimonial Carousel --- */
+#contact .contact-form input,
+#contact .contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    background-color: #fdfdfd;
+}
+
+#contact .contact-form button {
+    padding: 12px 20px;
+    background-color: var(--accent-color);
+    color: #1C2B4A;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Testimonial Section --- */
 .testimonial-carousel-container {
     position: relative;
     max-width: 800px;
     margin: 0 auto;
     overflow: hidden;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
 }
 
 .testimonial-carousel {
@@ -169,58 +204,23 @@ body.dark-mode a {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     color: white;
     border: none;
     padding: 10px;
     cursor: pointer;
     z-index: 100;
+    border-radius: 50%;
 }
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
 
-.prev-btn {
-    left: 10px;
-}
-
-.next-btn {
-    right: 10px;
-}
-
-/* --- Lightbox Modal --- */
-.lightbox {
-    display: none;
-    position: fixed;
-    z-index: 1001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.9);
-}
-
-.lightbox-content {
-    position: relative;
-    margin: auto;
+/* --- Footer --- */
+footer {
     padding: 20px;
-    width: 80%;
-    max-width: 700px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-#lightbox-img {
-    width: 100%;
-    height: auto;
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
+    text-align: center;
+    border-top: 1px solid var(--section-border);
+    margin-left: 250px;
 }
 
 /* --- Responsive Design --- */
@@ -228,14 +228,14 @@ body.dark-mode a {
     .sidebar {
         display: none;
     }
-
-    .main-panel {
+    .main-panel, footer {
         margin-left: 0;
+        padding: 20px;
     }
-
     .mobile-header {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+    }
+    .main-panel {
+        padding-top: 80px; /* Avoid content overlapping with fixed header */
     }
 }

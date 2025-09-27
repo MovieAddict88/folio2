@@ -20,17 +20,15 @@ if (!isset($_SESSION['username'])) {
     </ul>
 </div>
 
-<div class="main-content">
-    <div class="header">
-        <h1>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
-        <a href="logout.php" class="logout-btn">Logout</a>
-    </div>
-    <hr>
-
-    <?php if (isset($_GET['success'])): ?>
-        <p style="color: green;"><?php echo htmlspecialchars($_GET['success']); ?></p>
-    <?php endif; ?>
-    <?php if (isset($_GET['error'])): ?>
-        <p style="color: red;"><?php echo htmlspecialchars($_GET['error']); ?></p>
-    <?php endif; ?>
+<div class="header">
+    <h1>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+    <a href="logout.php" class="logout-btn">Logout</a>
 </div>
+<hr>
+
+<?php if (isset($_GET['success'])): ?>
+    <div class="message success"><?php echo htmlspecialchars($_GET['success']); ?></div>
+<?php endif; ?>
+<?php if (isset($_GET['error'])): ?>
+    <div class="message error"><?php echo htmlspecialchars($_GET['error']); ?></div>
+<?php endif; ?>
