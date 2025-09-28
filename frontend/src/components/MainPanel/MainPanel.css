@@ -1,0 +1,15 @@
+.main-panel {
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100vh;
+  margin-left: 250px; /* Default for desktop */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .main-panel {
+    margin-left: 0;
+    padding-top: 80px; /* 60px for TopBar + 20px padding */
+  }
+}

@@ -1,0 +1,110 @@
+/* Using similar styles to ManageProjects for consistency */
+.manage-testimonials .manage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.manage-testimonials .add-button {
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.testimonials-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.testimonials-table th,
+.testimonials-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.testimonials-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.testimonials-table .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.testimonials-table .actions button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.testimonials-table .actions .delete {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Modal styles are assumed to be shared from a common CSS file or ManageProjects.css, but are included for completeness */
+.form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1300;
+}
+
+.form-modal form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-modal input,
+.form-modal textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-modal .form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.form-modal .form-buttons button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.form-modal .form-buttons button[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.form-modal .form-buttons button[type="button"] {
+  background-color: #f0f0f0;
+}

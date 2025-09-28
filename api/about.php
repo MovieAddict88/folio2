@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *'); // Allow requests from any origin (for development)
+header('Access-Control-Allow-Origin: *');
 
 require_once '../config/config.php';
 
@@ -8,7 +8,7 @@ try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $stmt = $pdo->query('SELECT name, photo_url, tagline, bio, education, philosophy, email, linkedin_url, phone FROM about_me LIMIT 1');
+    $stmt = $pdo->query('SELECT name, photo_url, tagline, bio, education, philosophy, email, phone, video_url, linkedin_url, facebook_url, tiktok_url, youtube_url, instagram_url FROM about_me LIMIT 1');
     $about_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($about_data) {
