@@ -114,8 +114,15 @@ try {
     // 1. Admin User
     $admin_user = 'admin';
     $admin_pass = password_hash('admin123', PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare('INSERT INTO users (username, password_hash, first_login) VALUES (?, ?, ?)');
-    $stmt->execute([$admin_user, $admin_pass, 1]);
+
+    // Check if admin user already exists before inserting
+    $stmt = $pdo->prepare('SELECT id FROM users WHERE username = ?');
+    $stmt->execute([$admin_user]);
+
+    if ($stmt->fetchColumn() === false) {
+        $stmt_insert = $pdo->prepare('INSERT INTO users (username, password_hash, first_login) VALUES (?, ?, ?)');
+        $stmt_insert->execute([$admin_user, $admin_pass, 1]);
+    }
 
     // 2. About Me
     $stmt = $pdo->prepare('INSERT INTO about_me (name, photo_url, tagline, bio, education, philosophy, email, linkedin_url, phone, address, facebook_url, youtube_url, tiktok_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
