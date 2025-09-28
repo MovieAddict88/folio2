@@ -1,0 +1,74 @@
+.admin-dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.dashboard-sidebar {
+  width: 250px;
+  background-color: #343a40;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.dashboard-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.dashboard-sidebar li a {
+  display: block;
+  padding: 15px;
+  color: #adb5bd;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dashboard-sidebar li a:hover,
+.dashboard-sidebar li a.active {
+  background-color: #495057;
+  color: #fff;
+}
+
+.dashboard-sidebar .logout-button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.dashboard-main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #dee2e6;
+}
+
+.dashboard-content {
+  padding: 40px;
+  flex-grow: 1;
+  background-color: #f8f9fa;
+  overflow-y: auto;
+}

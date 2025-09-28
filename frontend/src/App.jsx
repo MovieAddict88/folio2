@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/admin/ProtectedRoute';
+
+// Layout component for the public-facing portfolio
+import PortfolioLayout from './PortfolioLayout';
+
+// Admin Components
+import LoginPage from './components/admin/LoginPage';
+import AdminDashboard from './components/admin/AdminDashboard';
+import ManageProjects from './components/admin/ManageProjects';
+import ManageTestimonials from './components/admin/ManageTestimonials';
+import ManageDownloads from './components/admin/ManageDownloads';
+import ManageAnalytics from './components/admin/ManageAnalytics';
+
+import './App.css';
+
+// A simple component for the dashboard landing page
+const AdminHome = () => <h3>Welcome to your Dashboard</h3>;
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Portfolio Route */}
+          <Route path="/*" element={<PortfolioLayout />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<LoginPage />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminHome />} />
+            <Route path="projects" element={<ManageProjects />} />
+            <Route path="testimonials" element={<ManageTestimonials />} />
+            <Route path="downloads" element={<ManageDownloads />} />
+            <Route path="analytics" element={<ManageAnalytics />} />
+          </Route>
+          {/* Redirect base /admin to login */}
+          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

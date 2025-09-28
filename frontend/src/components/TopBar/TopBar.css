@@ -1,0 +1,38 @@
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.portfolio-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.theme-switcher {
+  font-size: 20px;
+}
+
+/* This class is managed by App.jsx logic, but we hide it by default on desktop */
+@media (min-width: 769px) {
+  .top-bar {
+    display: none;
+  }
+}

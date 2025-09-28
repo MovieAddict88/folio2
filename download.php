@@ -1,39 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Document</title>
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; }
-        .download-box { background-color: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 400px; text-align: center; }
-        h1 { color: #333; }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 0.5rem; color: #555; }
-        input { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
-        button { width: 100%; padding: 0.75rem; background-color: #28a745; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
-        button:hover { background-color: #218838; }
-        .message { padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
-        .error { background-color: #f8d7da; color: #721c24; }
-        .success { background-color: #d4edda; color: #155724; }
-    </style>
-</head>
-<body>
-    <div class="download-box">
-        <h1>Secure Download</h1>
-        <p>Please enter the password you were given to download the document.</p>
+<?php
+require_once 'config/config.php';
 
-        <?php if (isset($_GET['error'])): ?>
-            <div class="message error"><?php echo htmlspecialchars($_GET['error']); ?></div>
-        <?php endif; ?>
+if (!isset($_GET['token'])) {
+    http_response_code(400);
+    die('Download token is missing.');
+}
 
-        <form action="verify-download.php" method="POST">
-            <div class="form-group">
-                <label for="password_code">Password Code</label>
-                <input type="text" id="password_code" name="password_code" required>
-            </div>
-            <button type="submit">Download File</button>
-        </form>
-    </div>
-</body>
-</html>
+$token = $_GET['token'];
+
+try {
+    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // 1. Find the token in the database
+    $stmt = $pdo->prepare('SELECT * FROM download_tokens WHERE token = ?');
+    $stmt->execute([$token]);
+    $token_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$token_data) {
+        http_response_code(404);
+        die('Invalid or expired token.');
+    }
+
+    // 2. Check if the token has expired
+    if (new DateTime() > new DateTime($token_data['expires_at'])) {
+        http_response_code(401);
+        die('Token has expired.');
+    }
+
+    // 3. Check if the token has already been used
+    if ($token_data['is_used']) {
+        http_response_code(401);
+        die('This download link has already been used.');
+    }
+
+    // 4. Mark the token as used to prevent reuse
+    $stmt = $pdo->prepare('UPDATE download_tokens SET is_used = 1 WHERE id = ?');
+    $stmt->execute([$token_data['id']]);
+
+    // 5. Get the file path from the main downloads table
+    $stmt = $pdo->prepare('SELECT file_path, file_name FROM downloads WHERE id = ?');
+    $stmt->execute([$token_data['file_id']]);
+    $file = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$file || !file_exists($file['file_path'])) {
+        http_response_code(404);
+        die('File not found.');
+    }
+
+    // 6. Track the download count
+    $stmt = $pdo->prepare('UPDATE downloads SET download_count = download_count + 1 WHERE id = ?');
+    $stmt->execute([$token_data['file_id']]);
+
+    // 7. Serve the file for download
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($file['file_name']) . '"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($file['file_path']));
+    readfile($file['file_path']);
+    exit;
+
+} catch (PDOException $e) {
+    http_response_code(500);
+    die('Database error: ' . $e->getMessage());
+}
+?>
